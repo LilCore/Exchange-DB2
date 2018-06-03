@@ -1,4 +1,4 @@
--- CREATE DE TABLAS
+-- CREATE DE TABLAS --
 CREATE TABLE usuario( 
 id_usuario number(10) NOT NULL CONSTRAINT pk_id_usuario PRIMARY KEY ,
 nombre varchar2(50) NOT NULL,
