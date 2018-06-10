@@ -4,11 +4,11 @@ id_usuario number(10) NOT NULL CONSTRAINT pk_id_usuario PRIMARY KEY ,
 nombre varchar2(50) NOT NULL,
 apellido varchar2(50) NOT NULL,
 correo varchar2(50) NOT NULL,
-contraseña number(10) NOT NULL,
+contraseña varchar2(10) NOT NULL,
 dni number(10) NOT NULL,
-tarjetas tarjetas,
-telefonos telefonos,
-monedas_fav favorito
+tarjetas tarjetas NULL,
+telefonos telefonos NULL,
+monedas_fav favorito NULL
 )nested table monedas_fav store as fav;
 
 
@@ -120,6 +120,12 @@ CREATE SEQUENCE seq_usuario
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
+ 
+ CREATE SEQUENCE seq_dni
+ START WITH     1000000
+ INCREMENT BY   1
+ NOCACHE
+ NOCYCLE;
 
 CREATE SEQUENCE seq_cartera
  START WITH     1
@@ -150,7 +156,9 @@ CREATE SEQUENCE seq_mercado
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
- 
+
+--DELETE FROM usuario
+--WHERE 1=1;
 
 
 

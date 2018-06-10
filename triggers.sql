@@ -1,8 +1,9 @@
-CREATE TRIGGER tri_usuario
+CREATE OR REPLACE TRIGGER tri_usuario
 BEFORE INSERT ON usuario
 FOR EACH ROW
 BEGIN
    :NEW.id_usuario := seq_usuario.NextVal;
+   :NEW.dni := seq_dni.NextVal;
 END;
 / 
 CREATE TRIGGER tri_cartera
