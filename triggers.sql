@@ -39,14 +39,7 @@ END;
 CREATE OR REPLACE TRIGGER tri_moneda_after
 AFTER INSERT ON moneda
 FOR EACH ROW
-
-    DECLARE 
-    ultima_moneda_insertada number(10);
-    ultimo_mercado_insertado number(10);
 BEGIN
-    ultima_moneda_insertada := seq_moneda.CurrVal;
-   DBMS_OUTPUT.put_line(seq_moneda.CurrVal);
-   DBMS_OUTPUT.put_line(seq_mercado.CurrVal);
 
    INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (seq_moneda.CurrVal,seq_mercado.CurrVal);
 
