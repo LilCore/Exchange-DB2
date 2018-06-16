@@ -157,14 +157,14 @@ CREATE SEQUENCE seq_mercado
  NOCACHE
  NOCYCLE;
 
-DELETE FROM mercado
+/*DELETE FROM mercado
 WHERE 1=1;
 
 DELETE FROM moneda
 WHERE 1=1;
 
 DELETE FROM mer_mon
-WHERE 1=1;
+WHERE 1=1;*/
 
 
 
