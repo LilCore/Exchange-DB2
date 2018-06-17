@@ -1,5 +1,4 @@
 create or replace FUNCTION INSERT_USUARIOSYCARTERASINI(moneda_id number) RETURN NUMBER AS 
-
 -- Variables
 
 aleatorio number;

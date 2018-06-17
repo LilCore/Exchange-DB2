@@ -1,5 +1,4 @@
-create or replace PROCEDURE SIMULACION_TRANSACCION AS 
-
+CREATE OR REPLACE PROCEDURE SIMULACION_TRANSACCION AS 
 --Define si sera una compra o una venta
 aleatorio number;
 
@@ -41,7 +40,7 @@ BEGIN
     SELECT ROUND(dbms_random.value(1,1.9))
     INTO aleatorio
     FROM dual;
-    DBMS_OUTPUT.PUT_LINE(aleatorio);
+    
     
     --Trae un x mercado(se comprará/venderá la moneda de dicho mercado)
     SELECT id_mercado,nombre_mercado
@@ -54,6 +53,10 @@ BEGIN
     INTO moneda_id
     FROM (SELECT id_moneda FROM mer_mon WHERE id_mercado=mercado_id ORDER BY DBMS_RANDOM.VALUE)
     WHERE rownum=1;
+    
+    --Para forzar las transacciones
+    --mercado_id:=35;
+    --mercado_nombre:='KTN';
     
     --Trae un usuario cualquiera
     SELECT id_usuario
@@ -119,13 +122,8 @@ BEGIN
                 INSERT INTO TRANSACCION
                 (tipo,fecha,datos_monedas,id_cartera,id_moneda)
                 VALUES
-                (1,fecha,datosm(cantidad_ventacompra,1),seq_cartera.CurrVal,mercado_ventacompra_id);
-                
-                --Venta
-                INSERT INTO TRANSACCION
-                (tipo,fecha,datos_monedas,id_cartera,id_moneda)
-                VALUES
-                (2,fecha,datosm(cantidad_ventacompra,1),seq_cartera.CurrVal,moneda_id);
+                (1,fecha,datosm(cantidad_ventacompra,1),cartera_id,mercado_ventacompra_id);
+                            
                 
                     --Verifica si tiene una cartera con la moneda que esta comprando
                     --No tiene cartera de la moneda a comprar 
@@ -136,6 +134,12 @@ BEGIN
                         (id_usuario,id_moneda,cantidad)
                         VALUES
                         (usuario_id,mercado_ventacompra_id,cantidad_ventacompra);
+                        
+                        --Venta
+                        INSERT INTO TRANSACCION
+                        (tipo,fecha,datos_monedas,id_cartera,id_moneda)
+                        VALUES
+                        (2,fecha,datosm(cantidad_ventacompra,1),seq_cartera.CurrVal,moneda_id);
                                                        
                     --Tiene cartera con la moneda a comprar
                     ELSE
@@ -143,6 +147,12 @@ BEGIN
                         UPDATE cartera
                         SET cantidad = cantidad+cantidad_ventacompra
                         WHERE id_cartera=cartera2_id ;
+                        
+                        --Venta
+                        INSERT INTO TRANSACCION
+                        (tipo,fecha,datos_monedas,id_cartera,id_moneda)
+                        VALUES
+                        (2,fecha,datosm(cantidad_ventacompra,1),cartera2_id,moneda_id);
                        
                     END IF;
                                             
@@ -193,7 +203,7 @@ BEGIN
                         DELETE FROM cartera
                         WHERE id_cartera=cartera_id;
                     END IF;
-                
+               
                 --Se resta la cantidad con la que se compró
                 UPDATE cartera
                 SET cantidad = cantidad-cantidad_ventacompra
@@ -203,13 +213,8 @@ BEGIN
                 INSERT INTO TRANSACCION
                 (tipo,fecha,datos_monedas,id_cartera,id_moneda)
                 VALUES
-                (1,fecha,datosm(cantidad_ventacompra,1),seq_cartera.CurrVal,moneda_id);
-                
-                --Venta
-                INSERT INTO TRANSACCION
-                (tipo,fecha,datos_monedas,id_cartera,id_moneda)
-                VALUES
-                (2,fecha,datosm(cantidad_ventacompra,1),seq_cartera.CurrVal,mercado_ventacompra_id);
+                (1,fecha,datosm(cantidad_ventacompra,1),cartera_id,moneda_id);
+                               
                 
                     --Verifica si tiene una cartera con la moneda que esta comprando
                     --No tiene cartera de la moneda a comprar 
@@ -220,6 +225,12 @@ BEGIN
                         (id_usuario,id_moneda,cantidad)
                         VALUES
                         (usuario_id,moneda_id,cantidad_ventacompra);
+                        
+                        --Venta
+                        INSERT INTO TRANSACCION
+                        (tipo,fecha,datos_monedas,id_cartera,id_moneda)
+                        VALUES
+                        (2,fecha,datosm(cantidad_ventacompra,1),seq_cartera.CurrVal,mercado_ventacompra_id);
                                                        
                     --Tiene cartera con la moneda a comprar
                     ELSE
@@ -227,12 +238,16 @@ BEGIN
                         UPDATE cartera
                         SET cantidad = cantidad+cantidad_ventacompra
                         WHERE id_cartera=cartera2_id ;
+                        
+                        --Venta
+                        INSERT INTO TRANSACCION
+                        (tipo,fecha,datos_monedas,id_cartera,id_moneda)
+                        VALUES
+                        (2,fecha,datosm(cantidad_ventacompra,1),cartera2_id,mercado_ventacompra_id);
                        
                     END IF;
                                             
-            END IF;
-        
-         
+            END IF;       
         
     END IF;             
      
