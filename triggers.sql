@@ -31,9 +31,7 @@ CREATE OR REPLACE TRIGGER tri_moneda
 BEFORE INSERT ON moneda
 FOR EACH ROW
 BEGIN
-
-       :NEW.id_moneda := seq_moneda.NextVal;
-
+    :NEW.id_moneda := seq_moneda.NextVal;
 END;
 /
 CREATE OR REPLACE TRIGGER tri_moneda_after

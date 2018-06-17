@@ -157,14 +157,27 @@ CREATE SEQUENCE seq_mercado
  NOCACHE
  NOCYCLE;
 
-/*DELETE FROM mercado
+/*
+
+DELETE FROM usuario
+WHERE 1=1;
+
+DELETE FROM mercado
 WHERE 1=1;
 
 DELETE FROM moneda
 WHERE 1=1;
 
 DELETE FROM mer_mon
-WHERE 1=1;*/
+WHERE 1=1;
+
+DELETE FROM transaccion
+WHERE 1=1;
+
+DELETE FROM cartera
+WHERE 1=1;
+
+*/
 
 
 

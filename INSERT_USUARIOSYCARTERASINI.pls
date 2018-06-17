@@ -1,4 +1,4 @@
-create or replace PROCEDURE INSERT_USUARIOS AS 
+create or replace FUNCTION INSERT_USUARIOSYCARTERASINI(moneda_id number) RETURN NUMBER AS 
 
 -- Variables
 
@@ -9,7 +9,8 @@ apellido_d varchar(50);
 email_d varchar(50);
 contraseña_d varchar(10);
 banco_d varchar(50);
-numero_d number(20);
+
+usuario_id number;
 
 TYPE tarjetas IS VARRAY(3) OF tarjeta;
 mis_tarjetas tarjetas;
@@ -17,9 +18,11 @@ mis_tarjetas tarjetas;
 TYPE telefonos IS VARRAY(3) OF number;
 mis_telefonos telefonos;
 
+
 BEGIN
 
- for i in 1..1000 loop
+
+for i in 1..1000 loop
   
   --Esto trae un numero aleatorio entre 1 y 200
   SELECT ROUND(dbms_random.value(1,199))
@@ -122,14 +125,6 @@ BEGIN
       mis_tarjetas(3).banco:= banco_d;
       mis_tarjetas(3).numero:= aleatorio;
       
-  
-    --Solo muestra datos
-    --DBMS_OUTPUT.put_line(nombre_d);
-   -- DBMS_OUTPUT.put_line(apellido_d);
-  --  DBMS_OUTPUT.put_line(email_d);
-  --  DBMS_OUTPUT.put_line(contraseña_d);
-  --  DBMS_OUTPUT.put_line(mis_telefonos(1));
- --   DBMS_OUTPUT.put_line(mis_tarjetas(1).banco);
       
     --Inserta un usuario  
     INSERT INTO USUARIO
@@ -137,11 +132,18 @@ BEGIN
     VALUES
     (nombre_d,apellido_d,email_d,contraseña_d,tarjetas(mis_tarjetas(1),mis_tarjetas(2),mis_tarjetas(3)),telefonos(mis_telefonos(1),mis_telefonos(2),mis_telefonos(3)));
       
-    --Aqui insertar direccion  
+     usuario_id := seq_usuario.CurrVal; --
+      
+    --Inserta una cartera con la moneda del sistema
+    INSERT INTO CARTERA
+    (id_usuario,id_moneda,cantidad)
+    VALUES
+    (usuario_id,moneda_id,20);
+      
+    --Aqui insertar direccion--  
       
     end loop;
-    
 
-  NULL;
-  
-END INSERT_USUARIOS;
+
+  RETURN 1;
+END INSERT_USUARIOSYCARTERASINI;
