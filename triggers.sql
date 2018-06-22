@@ -31,15 +31,80 @@ CREATE OR REPLACE TRIGGER tri_moneda
 BEFORE INSERT ON moneda
 FOR EACH ROW
 BEGIN
-    :NEW.id_moneda := seq_moneda.NextVal;
+    :NEW.id_moneda := seq_moneda.NextVal;  
 END;
 /
 CREATE OR REPLACE TRIGGER tri_moneda_after
 AFTER INSERT ON moneda
 FOR EACH ROW
+
+DECLARE
+--Id del usuario 
+usuario_id number(10);
+
+--Fecha del dia actual
+fecha date;
+
+--Precio de las moneda de compra y de venta
+precio_compra number;
+precio_venta number;
+
+--Id de la moneda del mercado
+id_moneda_mercado number;
+
+secuencia_cartera number;
+
 BEGIN
 
-   INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (seq_moneda.CurrVal,seq_mercado.CurrVal);
+     /*Inserta cada moneda en un mercado*/
+    INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (seq_moneda.CurrVal,seq_mercado.CurrVal);
+         
+    /*Por cada moneda se le asigna a un usuario aleatorio una moneda con esa cartera*/     
+    --Trae un usuario cualquiera
+    SELECT id_usuario
+    INTO usuario_id
+    FROM (SELECT id_usuario FROM usuario ORDER BY DBMS_RANDOM.VALUE)
+    WHERE rownum=1;
+       
+    --Inserta una cartera con 10 unid de la moneda al usuario cualquiera
+    INSERT INTO CARTERA
+    (id_usuario,id_moneda,cantidad)
+    VALUES
+    (usuario_id,seq_moneda.CurrVal,10); 
+    
+    secuencia_cartera := seq_cartera.CurrVal;
+                 
+    --Trae la fecha actual
+    SELECT CURRENT_DATE INTO fecha from dual;     
+        
+    --Selecciona un numero ramdon entre, 100 y 1000
+    SELECT dbms_random.value(100,1000)
+    INTO precio_compra
+    FROM dual;
+                 
+    --Simulo una compra-venta, no será necesario restar de la cartera
+    
+    INSERT INTO TRANSACCION
+    (tipo,fecha,datos_monedas,id_cartera,id_moneda)
+    VALUES
+    (1,fecha,datosm(10,precio_compra),secuencia_cartera,seq_moneda.CurrVal);
+    
+    --Trae el id de la moneda del mercado
+   /* No puedo hacer esto aquí
+    SELECT id_moneda
+    INTO id_moneda_mercado
+    FROM moneda
+    INNER JOIN mercado ON id_mercado = secuencia_cartera and mercado.nombre_mercado=moneda.abreviatura;
+           
+     --Selecciona un numero ramdon entre, 100 y 1000
+    SELECT dbms_random.value(100,1000)
+    INTO precio_venta
+    FROM dual;  
+           
+    INSERT INTO TRANSACCION
+    (tipo,fecha,datos_monedas,id_cartera,id_moneda)
+    VALUES
+    (2,fecha,datosm(10,precio_venta),secuencia_cartera,id_moneda_mercado);*/
 
 END;
 /

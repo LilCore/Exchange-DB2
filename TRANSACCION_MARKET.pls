@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE SIMULACION_TRANSACCION AS 
+create or replace PROCEDURE TRANSACCION_MARKET AS 
 --Define si sera una compra o una venta
 aleatorio number;
 
@@ -53,10 +53,6 @@ BEGIN
     INTO moneda_id
     FROM (SELECT id_moneda FROM mer_mon WHERE id_mercado=mercado_id ORDER BY DBMS_RANDOM.VALUE)
     WHERE rownum=1;
-    
-    --Para forzar las transacciones
-    --mercado_id:=35;
-    --mercado_nombre:='KTN';
     
     --Trae un usuario cualquiera
     SELECT id_usuario
@@ -253,4 +249,4 @@ BEGIN
      
 
   NULL;
-END SIMULACION_TRANSACCION;
+END TRANSACCION_MARKET;

@@ -1,4 +1,5 @@
-create or replace FUNCTION INSERT_USUARIOSYCARTERASINI(moneda_id number) RETURN NUMBER AS 
+create or replace PROCEDURE INSERT_USUARIOS AS 
+
 -- Variables
 
 aleatorio number;
@@ -10,6 +11,7 @@ contraseña_d varchar(10);
 banco_d varchar(50);
 
 usuario_id number;
+cartera_id number;
 
 TYPE tarjetas IS VARRAY(3) OF tarjeta;
 mis_tarjetas tarjetas;
@@ -131,18 +133,11 @@ for i in 1..1000 loop
     VALUES
     (nombre_d,apellido_d,email_d,contraseña_d,tarjetas(mis_tarjetas(1),mis_tarjetas(2),mis_tarjetas(3)),telefonos(mis_telefonos(1),mis_telefonos(2),mis_telefonos(3)));
       
-     usuario_id := seq_usuario.CurrVal; --
-      
-    --Inserta una cartera con la moneda del sistema
-    INSERT INTO CARTERA
-    (id_usuario,id_moneda,cantidad)
-    VALUES
-    (usuario_id,moneda_id,20);
-      
-    --Aqui insertar direccion--  
-      
-    end loop;
+     usuario_id := seq_usuario.CurrVal; 
+     
+               
+end loop;
 
 
-  RETURN 1;
-END INSERT_USUARIOSYCARTERASINI;
+  NULL;
+END INSERT_USUARIOS;

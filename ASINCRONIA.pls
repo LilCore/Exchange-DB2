@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE ASINCRONIA AS 
+create or replace PROCEDURE ASINCRONIA AS 
 
   ln_dummy number := 0;
 
@@ -8,7 +8,7 @@ BEGIN
 
 
 loop
-  DBMS_JOB.SUBMIT(ln_dummy, 'begin SIMULACION_TRANSACCION(); end;');
+  DBMS_JOB.SUBMIT(ln_dummy, 'begin TRANSACCION_MARKET(); end;');
   COMMIT;
 end loop;  
   

@@ -62,7 +62,7 @@ INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (id_katanacoin,id_ethereum_mer
 
 
 --Le envía a la insercion de usuarios el id de katanacoin para abrirles una cartera con 20 de dicha moneda--
- var := INSERT_USUARIOSYCARTERASINI(id_katanacoin);
+ var := INSERT_CARTERASINI(id_katanacoin);
 
   NULL;
 END INSERT_MONEDASYMERCADOS;
