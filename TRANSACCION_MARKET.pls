@@ -8,7 +8,7 @@ mercado_id number;
 --Nomrbe del meracdo
 mercado_nombre varchar(5);
 
---ID de la moneda
+--ID de la moneda 
 moneda_id number;
 
 --ID del usuario que hace la transaccion
