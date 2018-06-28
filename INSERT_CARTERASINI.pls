@@ -1,12 +1,15 @@
 create or replace FUNCTION INSERT_CARTERASINI(katana_id number) RETURN NUMBER AS 
 
-contador number := seq_usuario.CurrVal;
+
+contador number;
 contenedor number;
+
 
 BEGIN
 
+contador := seq_usuario.CurrVal;
 
-    WHILE contenedor != 0
+    WHILE contador != 0
     LOOP
    
         Begin 
@@ -22,11 +25,10 @@ BEGIN
         
       IF contenedor != 0 THEN       
         
-           DBMS_OUTPUT.PUT_LINE(contenedor);
-            /*INSERT INTO CARTERA
+            INSERT INTO CARTERA
             (id_usuario,id_moneda,cantidad)
             VALUES
-            (i,katana_id,20); */ 
+            (contenedor,katana_id,10);
             contador := contador - 1; 
             
       END IF;

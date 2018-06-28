@@ -63,52 +63,53 @@ BEGIN
 
     --Si la moneda es distinta de dolar entonces mete la moneda en el mercado dolar y le crea una transaccion
     IF seq_moneda.CurrVal != 1 THEN
-    INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (seq_moneda.CurrVal,1);
-             
-    /*Por cada moneda se le asigna a un usuario aleatorio una moneda con esa cartera*/     
-    --Trae un usuario cualquiera
-    SELECT id_usuario
-    INTO usuario_id
-    FROM (SELECT id_usuario FROM usuario ORDER BY DBMS_RANDOM.VALUE)
-    WHERE rownum=1;
-       
-    --Inserta una cartera con 10 unid de la moneda al usuario cualquiera
-    INSERT INTO CARTERA
-    (id_usuario,id_moneda,cantidad)
-    VALUES
-    (usuario_id,seq_moneda.CurrVal,10); 
     
-    secuencia_cartera := seq_cartera.CurrVal;
+        INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (seq_moneda.CurrVal,1);
                  
-    --Trae la fecha actual
-    SELECT CURRENT_DATE INTO fecha from dual;     
+        /*Por cada moneda se le asigna a un usuario aleatorio una moneda con esa cartera*/     
+        --Trae un usuario cualquiera
+        SELECT id_usuario
+        INTO usuario_id
+        FROM (SELECT id_usuario FROM usuario ORDER BY DBMS_RANDOM.VALUE)
+        WHERE rownum=1;
+           
+        --Inserta una cartera con 10 unid de la moneda al usuario cualquiera
+        INSERT INTO CARTERA
+        (id_usuario,id_moneda,cantidad)
+        VALUES
+        (usuario_id,seq_moneda.CurrVal,10); 
         
-    --Selecciona un numero ramdon entre, 100 y 1000
-    SELECT dbms_random.value(100,1000)
-    INTO precio_compra
-    FROM dual;
-                 
-    --Simulo una compra-venta, no será necesario restar de la cartera
-    
-    --Transaccion de la moneda a insertar
-    INSERT INTO TRANSACCION
-    (tipo,fecha,datos_monedas,id_cartera,id_moneda)
-    VALUES
-    (1,fecha,datosm(10,precio_compra),secuencia_cartera,seq_moneda.CurrVal);
-    
-    --Transaccion venta-dolar
-    INSERT INTO TRANSACCION
-    (tipo,fecha,datos_monedas,id_cartera,id_moneda,numero_transaccion_asociada)
-    VALUES
-    (2,fecha,datosm(10,precio_compra),secuencia_cartera,seq_moneda.CurrVal,seq_transaccion.CurrVal);
-    
-    
-    id_transaccion := seq_transaccion.CurrVal;
-    
-    --Se altera la tabla con el id de la ultima transaccion
-    UPDATE transaccion 
-    SET numero_transaccion_asociada = id_transaccion
-    WHERE numero_transaccion = id_transaccion - 1;
+        secuencia_cartera := seq_cartera.CurrVal;
+                     
+        --Trae la fecha actual
+        SELECT CURRENT_DATE INTO fecha from dual;     
+            
+        --Selecciona un numero ramdon entre, 100 y 1000
+        SELECT dbms_random.value(100,1000)
+        INTO precio_compra
+        FROM dual;
+                     
+        --Simulo una compra-venta, no será necesario restar de la cartera
+        
+        --Transaccion de la moneda a insertar
+        INSERT INTO TRANSACCION
+        (tipo,fecha,datos_monedas,id_cartera,id_moneda)
+        VALUES
+        (1,fecha,datosm(10,precio_compra),secuencia_cartera,seq_moneda.CurrVal);
+        
+        --Transaccion venta-dolar
+        INSERT INTO TRANSACCION
+        (tipo,fecha,datos_monedas,id_cartera,id_moneda,numero_transaccion_asociada)
+        VALUES
+        (2,fecha,datosm(10,precio_compra),secuencia_cartera,seq_moneda.CurrVal,seq_transaccion.CurrVal);
+        
+        
+        id_transaccion := seq_transaccion.CurrVal;
+        
+        --Se altera la tabla con el id de la ultima transaccion
+        UPDATE transaccion 
+        SET numero_transaccion_asociada = id_transaccion
+        WHERE numero_transaccion = id_transaccion - 1;
     
     END IF;
      
