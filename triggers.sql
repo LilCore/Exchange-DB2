@@ -30,8 +30,9 @@ END;
 CREATE OR REPLACE TRIGGER tri_moneda
 BEFORE INSERT ON moneda
 FOR EACH ROW
+
 BEGIN
-    :NEW.id_moneda := seq_moneda.NextVal;  
+    :NEW.id_moneda := seq_moneda.NextVal;    
 END;
 /
 CREATE OR REPLACE TRIGGER tri_moneda_after
@@ -54,11 +55,16 @@ id_moneda_mercado number;
 
 secuencia_cartera number;
 
+id_transaccion number;
 BEGIN
 
-     /*Inserta cada moneda en un mercado*/
+    /*Inserta cada moneda en un mercado*/
     INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (seq_moneda.CurrVal,seq_mercado.CurrVal);
-         
+
+    --Si la moneda es distinta de dolar entonces mete la moneda en el mercado dolar y le crea una transaccion
+    IF seq_moneda.CurrVal != 1 THEN
+    INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (seq_moneda.CurrVal,1);
+             
     /*Por cada moneda se le asigna a un usuario aleatorio una moneda con esa cartera*/     
     --Trae un usuario cualquiera
     SELECT id_usuario
@@ -84,28 +90,28 @@ BEGIN
                  
     --Simulo una compra-venta, no será necesario restar de la cartera
     
+    --Transaccion de la moneda a insertar
     INSERT INTO TRANSACCION
     (tipo,fecha,datos_monedas,id_cartera,id_moneda)
     VALUES
     (1,fecha,datosm(10,precio_compra),secuencia_cartera,seq_moneda.CurrVal);
     
-    --Trae el id de la moneda del mercado
-   /* No puedo hacer esto aquí
-    SELECT id_moneda
-    INTO id_moneda_mercado
-    FROM moneda
-    INNER JOIN mercado ON id_mercado = secuencia_cartera and mercado.nombre_mercado=moneda.abreviatura;
-           
-     --Selecciona un numero ramdon entre, 100 y 1000
-    SELECT dbms_random.value(100,1000)
-    INTO precio_venta
-    FROM dual;  
-           
+    --Transaccion venta-dolar
     INSERT INTO TRANSACCION
-    (tipo,fecha,datos_monedas,id_cartera,id_moneda)
+    (tipo,fecha,datos_monedas,id_cartera,id_moneda,numero_transaccion_asociada)
     VALUES
-    (2,fecha,datosm(10,precio_venta),secuencia_cartera,id_moneda_mercado);*/
-
+    (2,fecha,datosm(10,precio_compra),secuencia_cartera,seq_moneda.CurrVal,seq_transaccion.CurrVal);
+    
+    
+    id_transaccion := seq_transaccion.CurrVal;
+    
+    --Se altera la tabla con el id de la ultima transaccion
+    UPDATE transaccion 
+    SET numero_transaccion_asociada = id_transaccion
+    WHERE numero_transaccion = id_transaccion - 1;
+    
+    END IF;
+     
 END;
 /
 CREATE OR REPLACE TRIGGER tri_mercado

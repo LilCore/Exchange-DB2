@@ -36,7 +36,8 @@ tipo number(1) NOT NULL,
 fecha date NOT NULL,
 datos_monedas datosm,
 id_cartera number(10),
-id_moneda number(10) NOT NULL
+id_moneda number(10) NOT NULL,
+numero_transaccion_asociada number(10)
 );
 
 
@@ -92,6 +93,12 @@ ALTER TABLE transaccion
 ADD CONSTRAINT fk_cartera_transaccion
 FOREIGN KEY (id_cartera) 
 REFERENCES cartera(id_cartera) 
+ON DELETE SET NULL;
+
+ALTER TABLE transaccion
+ADD CONSTRAINT fk_transaccion_transaccion
+FOREIGN KEY (numero_transaccion_asociada) 
+REFERENCES transaccion(numero_transaccion) 
 ON DELETE SET NULL;
 
 ALTER TABLE transaccion
