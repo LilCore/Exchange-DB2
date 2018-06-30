@@ -112,7 +112,7 @@ BEGIN
             INSERT INTO TRANSACCION
             (tipo,fecha,datos_monedas,id_cartera,id_moneda)
             VALUES
-            (1,fecha,datosm(precio_moneda1/precio_moneda2*cantidad_ventacompra,nuevo_precio_moneda),id_cartera2,moneda_id);
+            (1,fecha,datosm(precio_moneda1/precio_moneda2*cantidad_ventacompra,nuevo_precio_moneda),id_cartera2,id_monedamercado);
                 
             id_transaccion := seq_transaccion.CurrVal;   
                 
@@ -148,7 +148,7 @@ BEGIN
             INSERT INTO TRANSACCION
             (tipo,fecha,datos_monedas,id_cartera,id_moneda)
             VALUES
-            (2,fecha,datosm(nueva_cantidad_moneda,precio_moneda2),id_cartera2,moneda_id);
+            (2,fecha,datosm(nueva_cantidad_moneda,precio_moneda2),id_cartera2,id_monedamercado);
                 
             id_transaccion := seq_transaccion.CurrVal;   
                 
