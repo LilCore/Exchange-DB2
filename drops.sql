@@ -13,3 +13,13 @@ DROP SEQUENCE seq_dni;
 DROP SEQUENCE seq_cartera;
 DROP SEQUENCE seq_usuario;
 DROP SEQUENCE seq_orden;
+
+
+/*DROP TRIGGER tri_usuario;
+DROP TRIGGER tri_cartera;
+DROP TRIGGER tri_orden;
+DROP TRIGGER tri_transaccion;
+DROP TRIGGER tri_moneda;
+DROP TRIGGER tri_moneda_after;
+DROP TRIGGER tri_mercado;*/
+

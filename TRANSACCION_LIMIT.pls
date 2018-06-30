@@ -1,4 +1,4 @@
-create or replace PROCEDURE TRANSACCION_MARKET AS 
+create or replace PROCEDURE TRANSACCION_LIMIT AS 
 --Define si sera una compra o una venta
 aleatorio number;
 
@@ -35,6 +35,12 @@ mercado_ventacompra_id number;
 --Precios en dolares de las monedas en la transaccion
 precio_moneda1 number;
 precio_moneda2 number;
+
+--Nuevo precio en dolares de la moneda a comprar
+nuevo_precio_moneda number;
+
+--Nueva cantidad con la que se esta comprando
+nueva_cantidad_moneda number;
 
 --ID de la primera transaccion insertada
 id_transaccion number;
@@ -109,13 +115,7 @@ BEGIN
                 INTO cantidad_ventacompra
                 FROM dual;
                 
-                --Se comprará con "cantidad_ventacompra" de id_moneda (ej:se comprara con 5 btc)
                 
-                --Se resta la cantidad con la que se compró
-                UPDATE cartera
-                SET cantidad = cantidad-cantidad_ventacompra
-                WHERE id_cartera=cartera_id;
- 
                 --Trae el precio en dolares de la moneda con la que se está comprando
                 SELECT HP.precio  
                 INTO precio_moneda1
@@ -129,14 +129,35 @@ BEGIN
                 FROM THE(SELECT historico_precio FROM mer_mon WHERE id_mercado = 1 and id_moneda = mercado_ventacompra_id) HP
                 WHERE HP.fecha=(SELECT MAX(HP2.fecha) FROM THE(SELECT historico_precio FROM mer_mon WHERE id_mercado = 1 and id_moneda = mercado_ventacompra_id) HP2);--debe ser el ultimo 
                 
-                --Las trans de la moneda que estoy comprando es tipo 1 y con la que estoy comprando es tipo 2
                 
+                --Calcula un nuevo precio en dolares para la moneda a comprar           
+                SELECT dbms_random.value(precio_moneda2/2,precio_moneda2*2)
+                INTO nuevo_precio_moneda
+                FROM dual;
+                
+                
+                --Calcula una nueva cantidad con la que se está comprando en base al nuevo precio de la moneda de compra
+                nueva_cantidad_moneda := (nuevo_precio_moneda/precio_moneda1)*(cantidad_ventacompra*precio_moneda1/precio_moneda2);
+                
+                              
+                --Verifíca si la nueva cantidad de monedas aun existe dentro de la cartera    
+                IF  (nueva_cantidad_moneda) > cantidad_disp
+                THEN 
+                NULL;
+                END IF;
+                    
+                    
+                --Se resta la cantidad con la que se compró
+                UPDATE cartera
+                SET cantidad = cantidad-nueva_cantidad_moneda
+                WHERE id_cartera=cartera_id;
+                     
+                                                            
                 --Venta-moneda (comprando con)(esto es una venta)
                 INSERT INTO TRANSACCION
                 (tipo,fecha,datos_monedas,id_cartera,id_moneda)
                 VALUES
-                (2,fecha,datosm(cantidad_ventacompra,precio_moneda1),cartera_id,moneda_id);
-                                
+                (2,fecha,datosm(nueva_cantidad_moneda,precio_moneda1),cartera_id,moneda_id);               
                                                                      
                     --Verifica si tiene una cartera con la moneda que se está comprando
                     --No tiene cartera de la moneda a comprar 
@@ -152,7 +173,7 @@ BEGIN
                         INSERT INTO TRANSACCION
                         (tipo,fecha,datos_monedas,id_cartera,id_moneda,numero_transaccion_asociada)
                         VALUES
-                        (1,fecha,datosm((cantidad_ventacompra*precio_moneda1/precio_moneda2),precio_moneda2),seq_cartera.CurrVal,mercado_ventacompra_id,seq_transaccion.CurrVal);
+                        (1,fecha,datosm((cantidad_ventacompra*precio_moneda1/precio_moneda2),nuevo_precio_moneda),seq_cartera.CurrVal,mercado_ventacompra_id,seq_transaccion.CurrVal);
                           
                          id_transaccion := seq_transaccion.Currval;      
                                              
@@ -172,7 +193,7 @@ BEGIN
                         INSERT INTO TRANSACCION
                         (tipo,fecha,datos_monedas,id_cartera,id_moneda,numero_transaccion_asociada)
                         VALUES
-                        (1,fecha,datosm((cantidad_ventacompra*precio_moneda1/precio_moneda2),precio_moneda2),cartera2_id,mercado_ventacompra_id,seq_transaccion.CurrVal);
+                        (1,fecha,datosm((cantidad_ventacompra*precio_moneda1/precio_moneda2),nuevo_precio_moneda),cartera2_id,mercado_ventacompra_id,seq_transaccion.CurrVal);
                         
                         id_transaccion := seq_transaccion.Currval;      
                                              
@@ -225,11 +246,7 @@ BEGIN
                 INTO cantidad_ventacompra
                 FROM dual;
                               
-                --Se resta la cantidad con la que se compró
-                UPDATE cartera
-                SET cantidad = cantidad-cantidad_ventacompra
-                WHERE id_cartera=cartera_id;
-                
+                               
                 --Trae el precio en dolares de la moneda con la que se está comprando             
                 SELECT HP.precio  
                 INTO precio_moneda1
@@ -242,14 +259,35 @@ BEGIN
                 FROM THE(SELECT historico_precio FROM mer_mon WHERE id_mercado = 1 and id_moneda = moneda_id) HP
                 WHERE HP.fecha=(SELECT MAX(HP2.fecha) FROM THE(SELECT historico_precio FROM mer_mon WHERE id_mercado = 1 and id_moneda = moneda_id) HP2);--debe ser el ultimo
 
-                                            
-                 --Venta-moneda (comprando con)(esto es una venta)
+                 --Calcula un nuevo precio en dolares para la moneda a comprar           
+                SELECT dbms_random.value(precio_moneda2/2,precio_moneda2*2)
+                INTO nuevo_precio_moneda
+                FROM dual;
+                
+                
+                --Calcula una nueva cantidad con la que se está comprando en base al nuevo precio de la moneda de compra
+                nueva_cantidad_moneda := (nuevo_precio_moneda/precio_moneda1)*(cantidad_ventacompra*precio_moneda1/precio_moneda2);
+                
+                              
+                --Verifíca si la nueva cantidad de monedas aun existe dentro de la cartera    
+                IF  (nueva_cantidad_moneda) > cantidad_disp
+                THEN 
+                NULL;
+                END IF;
+                    
+                --Se resta la cantidad con la que se compró
+                UPDATE cartera
+                SET cantidad = cantidad-nueva_cantidad_moneda
+                WHERE id_cartera=cartera_id;
+                     
+                                                       
+                --Venta-moneda (comprando con)(esto es una venta)
                 INSERT INTO TRANSACCION
                 (tipo,fecha,datos_monedas,id_cartera,id_moneda)
                 VALUES
-                (2,fecha,datosm(cantidad_ventacompra,precio_moneda1),cartera_id,mercado_ventacompra_id);                  
-                               
-                
+                (2,fecha,datosm(nueva_cantidad_moneda,precio_moneda1),cartera_id,mercado_ventacompra_id);               
+
+
                     --Verifica si tiene una cartera con la moneda que esta comprando
                     --No tiene cartera de la moneda a comprar 
                     IF cartera2_id = 0 THEN
@@ -265,7 +303,7 @@ BEGIN
                         INSERT INTO TRANSACCION
                         (tipo,fecha,datos_monedas,id_cartera,id_moneda,numero_transaccion_asociada)
                         VALUES
-                        (1,fecha,datosm((cantidad_ventacompra*precio_moneda1/precio_moneda2),precio_moneda2),seq_cartera.CurrVal,moneda_id,seq_transaccion.CurrVal);
+                        (1,fecha,datosm((cantidad_ventacompra*precio_moneda1/precio_moneda2),nuevo_precio_moneda),seq_cartera.CurrVal,moneda_id,seq_transaccion.CurrVal);
           
                    
                         id_transaccion := seq_transaccion.Currval;      
@@ -286,7 +324,7 @@ BEGIN
                         INSERT INTO TRANSACCION
                         (tipo,fecha,datos_monedas,id_cartera,id_moneda,numero_transaccion_asociada)
                         VALUES
-                        (1,fecha,datosm((cantidad_ventacompra*precio_moneda1/precio_moneda2),precio_moneda2),cartera2_id,moneda_id,seq_transaccion.CurrVal);
+                        (1,fecha,datosm((cantidad_ventacompra*precio_moneda1/precio_moneda2),nuevo_precio_moneda),cartera2_id,moneda_id,seq_transaccion.CurrVal);
                        
                         id_transaccion := seq_transaccion.Currval;      
                                              
@@ -299,8 +337,6 @@ BEGIN
                                             
             END IF;       
         
-    END IF;  
-     
-
+    END IF;             
   NULL;
-END TRANSACCION_MARKET;
+END TRANSACCION_LIMIT;

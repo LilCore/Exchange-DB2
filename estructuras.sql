@@ -15,8 +15,7 @@ fecha date
 Create or replace type historial as table of historialp;
 /
 Create or replace type favoritop as object
-(id_moneda number(20)
-);
+(id_moneda number(20));
 /
 Create or replace type favorito as table of favoritop;
 /

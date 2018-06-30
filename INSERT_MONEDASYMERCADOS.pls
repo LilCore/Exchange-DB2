@@ -13,6 +13,7 @@ BEGIN
 
 
 INSERT INTO mercado (nombre_mercado) VALUES ('DOL');
+
 INSERT INTO mercado (nombre_mercado) VALUES ('KTN');
 INSERT INTO moneda (nombre,abreviatura) VALUES ('DOLLAR','DOL');
 id_dolar := seq_moneda.CurrVal;
@@ -45,9 +46,9 @@ INSERT INTO moneda (nombre,abreviatura) VALUES ('LOREMA','LOR');
 INSERT INTO moneda (nombre,abreviatura) VALUES ('DIGNISSIM.','DIGNI');
 INSERT INTO moneda (nombre,abreviatura) VALUES ('KATANACOIN','KTN');
 id_katanacoin := seq_moneda.CurrVal;
---INSERT INTO moneda (nombre,abreviatura) VALUES ('ETHERIUM','ETH');
 INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (id_ethereum,id_bitcoin_mercado);
 INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (id_dolar,id_bitcoin_mercado);
+
 
 INSERT INTO mercado (nombre_mercado) VALUES ('ETH');
 id_ethereum_mercado := seq_mercado.CurrVal;
@@ -60,14 +61,12 @@ INSERT INTO moneda (nombre,abreviatura) VALUES ('MARISUM','MARI');
 INSERT INTO moneda (nombre,abreviatura) VALUES ('NIGGAZ','NIGG');
 INSERT INTO moneda (nombre,abreviatura) VALUES ('SUPAM','SUP');
 INSERT INTO moneda (nombre,abreviatura) VALUES ('ASAP','ASA');
---INSERT INTO moneda (nombre,abreviatura) VALUES ('BITCOIN','BTC');
 INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (id_bitcoin,id_ethereum_mercado);
---INSERT INTO moneda (nombre,abreviatura) VALUES ('KATANACOIN','KTN');
 INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (id_katanacoin,id_ethereum_mercado);
-INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (id_dolar,id_bitcoin_mercado);
+INSERT INTO mer_mon (id_moneda,id_mercado) VALUES (id_dolar,id_ethereum_mercado);
 
 --Le envía a la insercion de usuarios el id de katanacoin para abrirles una cartera con 20 de dicha moneda--
- var := INSERT_CARTERASINI(id_katanacoin);
+ var := INSERT_CARTERASINI(id_katanacoin,id_bitcoin,id_ethereum);
 
   NULL;
 END INSERT_MONEDASYMERCADOS;

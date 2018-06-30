@@ -1,4 +1,4 @@
-create or replace FUNCTION INSERT_CARTERASINI(katana_id number) RETURN NUMBER AS 
+create or replace FUNCTION INSERT_CARTERASINI(katana_id number,btc_id number,eth_id number) RETURN NUMBER AS 
 
 
 contador number;
@@ -29,8 +29,19 @@ contador := seq_usuario.CurrVal;
             (id_usuario,id_moneda,cantidad)
             VALUES
             (contenedor,katana_id,10);
-            contador := contador - 1; 
             
+            INSERT INTO CARTERA
+            (id_usuario,id_moneda,cantidad)
+            VALUES
+            (contenedor,btc_id,10);
+            
+            INSERT INTO CARTERA
+            (id_usuario,id_moneda,cantidad)
+            VALUES
+            (contenedor,eth_id,10);
+            
+            
+            contador := contador - 1;             
       END IF;
             
     END LOOP;
